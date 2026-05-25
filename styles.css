@@ -1,0 +1,226 @@
+.ttrpg-detect-roll-formula {
+	color: var(--ttrpg-detect-roll-formula-text, var(--text-accent));
+	cursor: pointer;
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	text-underline-offset: 2px;
+	border-color: var(--ttrpg-detect-roll-formula-border, var(--text-accent));
+	background: var(--ttrpg-detect-roll-formula-background, transparent);
+}
+
+.ttrpg-detect-roll-formula:hover,
+.ttrpg-detect-roll-formula:focus-visible {
+	filter: brightness(1.08);
+}
+
+.ttrpg-detect-roll-formula-button {
+	display: inline-block;
+	padding: 0 0.35em;
+	border: 1px solid var(--ttrpg-detect-roll-formula-border, var(--text-accent));
+	border-radius: 4px;
+	background: var(--ttrpg-detect-roll-formula-background, var(--background-modifier-hover));
+	text-decoration: none;
+}
+
+.ttrpg-detect-roll-notice {
+	background: var(--ttrpg-detect-roll-toast-background, var(--background-primary));
+	color: var(--ttrpg-detect-roll-toast-text, var(--text-normal));
+}
+
+.ttrpg-detect-roll-notice .notice-message {
+	color: inherit;
+}
+
+.ttrpg-detect-roll-notice-total {
+	font-weight: 600;
+	font-family: var(--font-monospace);
+	font-variant-numeric: tabular-nums;
+}
+
+.ttrpg-detect-roll-notice-detail {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	font-family: var(--font-monospace);
+	font-variant-numeric: tabular-nums;
+}
+
+.ttrpg-detect-roll-notice-error {
+	border-inline-start: 3px solid var(--text-error);
+}
+
+.ttrpg-detect-roll-notice-bottom-right {
+	position: fixed;
+	right: 20px;
+	bottom: 20px;
+	top: auto;
+	left: auto;
+}
+
+.ttrpg-detect-roll-notice-bottom-left {
+	position: fixed;
+	left: 20px;
+	bottom: 20px;
+	top: auto;
+	right: auto;
+}
+
+.ttrpg-detect-roll-notice-top-right {
+	position: fixed;
+	right: 20px;
+	top: 20px;
+	left: auto;
+	bottom: auto;
+}
+
+.ttrpg-detect-roll-notice-top-left {
+	position: fixed;
+	left: 20px;
+	top: 20px;
+	right: auto;
+	bottom: auto;
+}
+
+.ttrpg-detect-roll-view {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	height: 100%;
+	padding: 12px;
+}
+
+.ttrpg-detect-roll-history {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 8px;
+	min-height: 0;
+	overflow: auto;
+}
+
+.ttrpg-detect-roll-controls {
+	display: flex;
+	flex: 0 0 auto;
+	flex-direction: column;
+	gap: 8px;
+	border-top: 1px solid var(--background-modifier-border);
+	padding-top: 10px;
+}
+
+.ttrpg-detect-roll-quick-dice,
+.ttrpg-detect-roll-modes {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.ttrpg-detect-roll-quick-dice button {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	padding: 2px 8px;
+	background-color: var(--background-secondary);
+	cursor: pointer;
+	font-family: var(--font-monospace);
+	font-variant-numeric: tabular-nums;
+}
+
+.ttrpg-detect-roll-quick-dice button:hover,
+.ttrpg-detect-roll-quick-dice button:focus-visible {
+	border-color: var(--interactive-accent);
+	background-color: var(--background-modifier-hover);
+}
+
+.ttrpg-detect-roll-input-row {
+	display: flex;
+	gap: 6px;
+}
+
+.ttrpg-detect-roll-input-row input {
+	flex: 1;
+	min-width: 0;
+	font-family: var(--font-monospace);
+	font-variant-numeric: tabular-nums;
+}
+
+.ttrpg-detect-roll-entry {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+	padding: 8px;
+}
+
+.ttrpg-detect-roll-entry-header {
+	display: flex;
+	justify-content: space-between;
+	gap: 8px;
+	font-weight: 600;
+}
+
+.ttrpg-detect-roll-entry-total {
+	min-width: 0;
+	overflow-wrap: anywhere;
+	font-family: var(--font-monospace);
+	font-variant-numeric: tabular-nums;
+}
+
+.ttrpg-detect-roll-entry-time {
+	flex: 0 0 auto;
+	font-variant-numeric: tabular-nums;
+}
+
+.ttrpg-detect-roll-entry-time,
+.ttrpg-detect-roll-entry-detail,
+.ttrpg-detect-roll-empty {
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+}
+
+.ttrpg-detect-roll-entry-detail {
+	font-family: var(--font-monospace);
+	font-variant-numeric: tabular-nums;
+}
+
+.ttrpg-detect-roll-active-mode {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.ttrpg-detect-roll-modes button.ttrpg-detect-roll-active-mode {
+	border-color: var(--interactive-accent);
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.ttrpg-detect-roll-clear-row {
+	display: flex;
+}
+
+.ttrpg-detect-roll-clear-button {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	border: 1px solid var(--ttrpg-detect-roll-clear-border, rgba(var(--color-red-rgb), 0.35));
+	border-radius: 4px;
+	padding: 4px 8px;
+	background-color: var(--ttrpg-detect-roll-clear-background, rgba(var(--color-red-rgb), 0.12));
+	color: var(--ttrpg-detect-roll-clear-text, var(--text-error));
+	cursor: pointer;
+}
+
+.ttrpg-detect-roll-clear-button:hover,
+.ttrpg-detect-roll-clear-button:focus-visible {
+	filter: brightness(1.08);
+}
+
+.ttrpg-detect-roll-settings-collapse {
+	border-top: 1px solid var(--background-modifier-border);
+	padding-top: 12px;
+}
+
+.ttrpg-detect-roll-settings-collapse summary {
+	cursor: pointer;
+	font-weight: 600;
+}
+
+.ttrpg-detect-roll-settings-collapse-content {
+	padding-top: 8px;
+}
