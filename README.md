@@ -1,90 +1,150 @@
-# Obsidian Sample Plugin
+# RPG Detect Dice Roll
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+RPG Detect Dice Roll is an Obsidian plugin for tabletop role-playing notes. It detects dice formulas in reading view, turns them into clickable roll controls, and keeps recent results in a roll history panel.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+Use it for session notes, solo RPG journals, encounter prep, oracle tables, random events, and any note where you want `1d20 + 4` or `2d6` to roll directly from the page.
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open modal (simple)" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+## Features
 
-## First time developing plugins?
-
-Quick starting guide for new plugin devs:
-
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
-
-## Releasing new releases
-
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
-
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
-
-## Adding your plugin to the community plugin list
-
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+- Detects dice formulas in reading view and makes them clickable.
+- Supports formulas such as `d20`, `1d20 + 4`, `2d6 - 1`, `4d6kh3`, `2d20kl1`, `4d6dl1`, and `4d6dh1`.
+- Shows roll results in Obsidian notices with the total, formula, and roll details.
+- Adds a roll history side panel with recent results and timestamps.
+- Provides quick buttons for common dice: `d4`, `d6`, `d8`, `d10`, `d12`, `d20`, and `d100`.
+- Supports advantage and disadvantage rolls.
+- Lets you create custom formula dice buttons.
+- Lets you create custom narrative dice that choose from text outcomes, with optional weighting.
+- Includes display, color, toast placement, history, and control visibility settings.
+- Works offline and stores settings locally in your vault.
 
 ## How to use
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+Write dice formulas naturally in your notes, then switch to reading view. Detected formulas are styled as interactive text or buttons, depending on your settings.
 
-## Manually installing the plugin
+- Select a detected formula to roll it normally.
+- Right-click a detected formula to roll normally, with advantage, or with disadvantage.
+- Select the dice ribbon icon or run **Open roll history** from the command palette to open the roll history panel.
+- Use the roll history panel to build manual formulas with quick dice buttons, operators, advantage controls, and custom dice.
+- Press **Roll** or Enter in the manual input to roll the typed formula.
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+## Formula support
 
-## Improve code quality with eslint
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- This project already has eslint preconfigured, you can invoke a check by running`npm run lint`
-- Together with a custom eslint [plugin](https://github.com/obsidianmd/eslint-plugin) for Obsidan specific code guidelines.
-- A GitHub action is preconfigured to automatically lint every commit on all branches.
+The plugin supports standard dice terms with optional modifiers:
 
-## Funding URL
-
-You can include funding URLs where people who use your plugin can financially support it.
-
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
-
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
+```text
+d20
+1d20 + 4
+2d6 - 1
+4d6kh3
+2d20kl1
+4d6dl1
+4d6dh1
 ```
 
-If you have multiple URLs, you can also do:
+Keep/drop suffixes mean:
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
+- `kh`: keep highest
+- `kl`: keep lowest
+- `dh`: drop highest
+- `dl`: drop lowest
+
+For example, `4d6kh3` rolls four six-sided dice and keeps the highest three.
+
+## Settings
+
+Open **Settings → Community plugins → RPG Detect Dice Roll** to configure the plugin.
+
+- **Formula display**: choose inline styling or button styling for detected formulas.
+- **History limit**: choose how many recent rolls are kept in the roll history panel.
+- **Toast placement**: choose where roll notices appear.
+- **Manual roll controls**: show or hide advantage, operator, and clear-history controls.
+- **Dice buttons**: choose which built-in dice buttons appear.
+- **Custom dice**: add custom formula buttons or narrative dice.
+- **UI and color settings**: customize formula, notice, and clear-history colors separately for light and dark themes.
+
+## Custom dice
+
+Custom formula dice add reusable buttons to the roll history panel. A formula die can be a full formula such as `1d3`, `2d6 + 1`, or a keep/drop suffix such as `kh1`.
+
+Custom narrative dice choose from text outcomes instead of numeric totals. Each outcome can have an optional weight. If no valid weights are provided, each outcome has an equal chance.
+
+## Manual installation
+
+1. Download the latest release files.
+2. Create this folder in your vault:
+
+```text
+<Vault>/.obsidian/plugins/rpg-detect-detect-dice-roll/
 ```
 
-## API Documentation
+3. Copy these files into that folder:
 
-See https://docs.obsidian.md
+```text
+main.js
+manifest.json
+styles.css
+```
+
+4. Reload Obsidian.
+5. Enable the plugin in **Settings → Community plugins**.
+
+## Development
+
+This project uses TypeScript, npm, and esbuild.
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start a development build in watch mode:
+
+```bash
+npm run dev
+```
+
+Create a production build:
+
+```bash
+npm run build
+```
+
+The Obsidian release artifact is `main.js`, generated at the plugin root.
+
+## Create a release
+
+Before creating a release, make sure the plugin builds successfully:
+
+```bash
+npm run build
+```
+
+Then prepare the release:
+
+1. Update `manifest.json` to the new Semantic Versioning value, such as `1.0.0` for the initial release. Obsidian supports versions only in `x.y.z` format.
+2. Update `versions.json` so the plugin version maps to the minimum supported Obsidian version.
+3. Create a GitHub release.
+4. Set the release tag to exactly match the version in `manifest.json`. Do not add a leading `v`.
+5. Enter a release name and description.
+6. Upload these release assets as binary attachments:
+
+```text
+main.js
+manifest.json
+styles.css
+```
+
+`styles.css` is optional for Obsidian releases, but this plugin uses it, so include it.
+
+## Privacy
+
+RPG Detect Dice Roll runs locally in Obsidian. It does not make network requests, collect analytics, or send vault contents to external services.
+
+## Support
+
+<a href="https://www.buymeacoffee.com/solorpgstudio"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=solorpgstudio&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff" /></a>
+
+## License
+
+This project is licensed under the terms in [LICENSE](LICENSE).

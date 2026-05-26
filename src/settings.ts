@@ -42,7 +42,7 @@ export interface CustomNarrativeDie {
 	outcomes: NarrativeOutcome[];
 }
 
-export interface TtrpgDetectRollSettings {
+export interface RpgDetectDiceRollSettings {
 	formulaStyle: FormulaStyle;
 	formulaColors: Record<ThemeMode, FormulaColorSettings>;
 	toastColors: Record<ThemeMode, ToastColorSettings>;
@@ -58,7 +58,7 @@ export interface TtrpgDetectRollSettings {
 	showClearHistoryButton: boolean;
 }
 
-export const DEFAULT_SETTINGS: TtrpgDetectRollSettings = {
+export const DEFAULT_SETTINGS: RpgDetectDiceRollSettings = {
 	formulaStyle: "inline",
 	formulaColors: {
 		light: {

@@ -7,7 +7,7 @@ import {
 	WorkspaceLeaf,
 } from "obsidian";
 import { BUILT_IN_DICE_BUTTONS, DEFAULT_SETTINGS, TtrpgDetectRollSettingTab } from "./settings";
-import type { CustomNarrativeDie, RpgDetectDiceRoll, ThemeMode, ToastPlacement } from "./settings";
+import type { CustomNarrativeDie, RpgDetectDiceRollSettings, ThemeMode, ToastPlacement } from "./settings";
 
 const VIEW_TYPE_ROLL_HISTORY = "ttrpg-detect-roll-history";
 const DICE_PATTERN = /\b(?:\d*)d\d+(?:(?:kh|kl|dh|dl)\d+)?(?:\s*[+-]\s*\d+)?\b/gi;
@@ -57,7 +57,7 @@ interface RollOptions {
 }
 
 export default class TtrpgDetectRollPlugin extends Plugin {
-	settings: RpgDetectDiceRoll;
+	settings: RpgDetectDiceRollSettings;
 	history: RollResult[] = [];
 	private themeObserver: MutationObserver | null = null;
 
@@ -96,7 +96,7 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 	}
 
 	async loadSettings(): Promise<void> {
-		const savedSettings = await this.loadData() as Partial<RpgDetectDiceRoll> | null;
+		const savedSettings = await this.loadData() as Partial<RpgDetectDiceRollSettings> | null;
 		this.settings = {
 			...DEFAULT_SETTINGS,
 			...savedSettings,
