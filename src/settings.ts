@@ -96,7 +96,6 @@ export const DEFAULT_SETTINGS: RpgDetectDiceRollSettings = {
 
 export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 	plugin: RpgDetectDiceRoll;
-	private colorSettingsContainerEl: HTMLElement | null = null;
 
 	constructor(app: App, plugin: RpgDetectDiceRoll) {
 		super(app, plugin);
@@ -211,15 +210,11 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 
 		this.addCustomDiceSettings(containerEl);
 
-		const colorSettingsEl = containerEl.createEl("details", { cls: "ttrpg-detect-roll-settings-collapse" });
-		colorSettingsEl.createEl("summary", { text: "UI and color settings" });
-		this.colorSettingsContainerEl = colorSettingsEl.createDiv({ cls: "ttrpg-detect-roll-settings-collapse-content" });
-
+		new Setting(containerEl).setName("UI and color settings").setHeading();
 		this.addFormulaColorSettings("light");
 		this.addFormulaColorSettings("dark");
 		this.addToastColorSettings("light");
 		this.addToastColorSettings("dark");
-		this.colorSettingsContainerEl = null;
 	}
 
 	private addCustomDiceSettings(containerEl: HTMLElement): void {
@@ -499,7 +494,7 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 	}
 
 	private getColorSettingsContainerEl(): HTMLElement {
-		return this.colorSettingsContainerEl ?? this.containerEl;
+		return this.containerEl;
 	}
 
 	private formatThemeLabel(theme: ThemeMode): string {
