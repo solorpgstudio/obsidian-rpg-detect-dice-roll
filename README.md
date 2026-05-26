@@ -74,7 +74,7 @@ Custom narrative dice choose from text outcomes instead of numeric totals. Each 
 2. Create this folder in your vault:
 
 ```text
-<Vault>/.obsidian/plugins/rpg-detect-detect-dice-roll/
+<Vault>/.obsidian/plugins/rpg-detect-dice-roll/
 ```
 
 3. Copy these files into that folder:
