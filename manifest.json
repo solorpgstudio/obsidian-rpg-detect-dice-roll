@@ -1,8 +1,8 @@
 {
 	"id": "rpg-detect-dice-roll",
 	"name": "RPG Detect Dice Roll",
-	"version": "1.0.0",
-	"minAppVersion": "1.0.0",
+	"version": "1.0.1",
+	"minAppVersion": "1.0.1",
 	"description": "Detects dice formulas in your notes and provides a way to automatically roll them.",
 	"author": "solorpgstudio",
 	"authorUrl": "https://www.solorpgstudio.com",

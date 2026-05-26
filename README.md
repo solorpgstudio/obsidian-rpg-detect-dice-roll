@@ -93,6 +93,8 @@ styles.css
 
 This project uses TypeScript, npm, and esbuild.
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
+
 Install dependencies:
 
 ```bash
