@@ -17,6 +17,10 @@ Use it for session notes, solo RPG journals, encounter prep, oracle tables, rand
 - Includes display, color, toast placement, history, and control visibility settings.
 - Works offline and stores settings locally in your vault.
 
+## Open RPG Detect Dice Roll Logs History
+
+To open the log history and the default + custom dice roll, open the command palette and type: `PG Detect Dice Roll: Open roll history`
+
 ## How to use
 
 Write dice formulas naturally in your notes, then switch to reading view. Detected formulas are styled as interactive text or buttons, depending on your settings.
@@ -68,77 +72,6 @@ Open **Settings → Community plugins → RPG Detect Dice Roll** to configure th
 Custom formula dice add reusable buttons to the roll history panel. A formula die can be a full formula such as `1d3`, `2d6 + 1`, or a keep/drop suffix such as `kh1`.
 
 Custom narrative dice choose from text outcomes instead of numeric totals. Each outcome can have optional relative odds, such as `1`, `3`, `40%`, or `1/5`. If weights are blank or invalid, the plugin treats those outcomes as equal odds.
-
-## Manual installation
-
-1. Download the latest release files.
-2. Create this folder in your vault:
-
-```text
-<Vault>/.obsidian/plugins/rpg-detect-dice-roll/
-```
-
-3. Copy these files into that folder:
-
-```text
-main.js
-manifest.json
-styles.css
-```
-
-4. Reload Obsidian.
-5. Enable the plugin in **Settings → Community plugins**.
-
-## Development
-
-This project uses TypeScript, npm, and esbuild.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Start a development build in watch mode:
-
-```bash
-npm run dev
-```
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-The Obsidian release artifact is `main.js`, generated at the plugin root.
-
-## Create a release
-
-Before creating a release, make sure the plugin builds successfully:
-
-```bash
-npm run build
-```
-
-Then prepare the release:
-
-1. Update `manifest.json` to the new Semantic Versioning value, such as `1.0.0` for the initial release. Obsidian supports versions only in `x.y.z` format.
-2. Update `versions.json` so the plugin version maps to the minimum supported Obsidian version.
-3. Create a GitHub release.
-4. Set the release tag to exactly match the version in `manifest.json`. Do not add a leading `v`.
-5. Enter a release name and description.
-6. Upload these release assets as binary attachments:
-
-```text
-main.js
-manifest.json
-styles.css
-```
-
-`styles.css` is optional for Obsidian releases, but this plugin uses it, so include it.
 
 ## Privacy
 
