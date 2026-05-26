@@ -57,7 +57,7 @@ interface RollOptions {
 }
 
 export default class TtrpgDetectRollPlugin extends Plugin {
-	settings: RpgDetectDiceRollSettings;
+	settings!: RpgDetectDiceRollSettings;
 	history: RollResult[] = [];
 	private themeObserver: MutationObserver | null = null;
 
@@ -1054,7 +1054,7 @@ class RollHistoryView extends ItemView {
 			return `${value.slice(0, match.index)}${prefix}${count - 1}${dice}`;
 		}
 
-		return value.slice(0, match.index).trimEnd();
+		return value.slice(0, match.index).replace(/\s+$/, "");
 	}
 
 	private appendNewDiceTerm(value: string, dice: string): string {
