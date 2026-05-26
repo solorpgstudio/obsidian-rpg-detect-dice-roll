@@ -143,7 +143,7 @@ RPG Detect Dice Roll runs locally in Obsidian. It does not make network requests
 
 ## Support
 
-<a href="https://www.buymeacoffee.com/solorpgstudio"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=solorpgstudio&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff" /></a>
+[![Buy me a coffee](https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20coffee&emoji=☕&slug=solorpgstudio&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff)](https://www.buymeacoffee.com/solorpgstudio)
 
 ## License
 
