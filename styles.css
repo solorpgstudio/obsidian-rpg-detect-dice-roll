@@ -1,5 +1,5 @@
 .ttrpg-detect-roll-formula {
-	color: var(--ttrpg-detect-roll-formula-text, var(--text-accent));
+	color: var(--ttrpg-detect-roll-formula-text, var(--link-external-color));
 	cursor: pointer;
 	text-decoration: underline;
 	text-decoration-style: dotted;
@@ -187,28 +187,6 @@
 	border-color: var(--interactive-accent);
 	background-color: var(--interactive-accent);
 	color: var(--text-on-accent);
-}
-
-.ttrpg-detect-roll-clear-row {
-	display: flex;
-}
-
-.ttrpg-detect-roll-clear-button {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
-	border: 1px solid var(--ttrpg-detect-roll-clear-border, rgba(var(--color-red-rgb), 0.35));
-	border-radius: 4px;
-	padding: 4px 8px;
-	background-color: var(--ttrpg-detect-roll-clear-background, rgba(var(--color-red-rgb), 0.12));
-	color: var(--ttrpg-detect-roll-clear-text, var(--text-error));
-	cursor: pointer;
-}
-
-.ttrpg-detect-roll-clear-button:hover,
-.ttrpg-detect-roll-clear-button:focus-visible {
-	filter: brightness(1.08);
 }
 
 .ttrpg-detect-roll-settings-collapse {

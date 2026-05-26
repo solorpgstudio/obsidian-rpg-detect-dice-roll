@@ -8,7 +8,7 @@ Use it for session notes, solo RPG journals, encounter prep, oracle tables, rand
 
 - Detects dice formulas in reading view and makes them clickable.
 - Supports formulas such as `d20`, `1d20 + 4`, `2d6 - 1`, `4d6kh3`, `2d20kl1`, `4d6dl1`, and `4d6dh1`.
-- Shows roll results in Obsidian notices with the total, formula, and roll details.
+- Shows optional roll result notices with the total, formula, and roll details.
 - Adds a roll history side panel with recent results and timestamps.
 - Provides quick buttons for common dice: `d4`, `d6`, `d8`, `d10`, `d12`, `d20`, and `d100`.
 - Supports advantage and disadvantage rolls.
@@ -56,17 +56,18 @@ Open **Settings → Community plugins → RPG Detect Dice Roll** to configure th
 
 - **Formula display**: choose inline styling or button styling for detected formulas.
 - **History limit**: choose how many recent rolls are kept in the roll history panel.
-- **Toast placement**: choose where roll notices appear.
-- **Manual roll controls**: show or hide advantage, operator, and clear-history controls.
+- **Show roll notices**: show or hide toast notices when rolls complete. Enabled by default.
+- **Toast placement**: choose where roll notices appear when notices are enabled.
+- **Manual roll controls**: show or hide advantage and operator controls.
 - **Dice buttons**: choose which built-in dice buttons appear.
 - **Custom dice**: add custom formula buttons or narrative dice.
-- **UI and color settings**: customize formula, notice, and clear-history colors separately for light and dark themes.
+- **UI and color settings**: customize formula and notice colors separately for light and dark themes.
 
 ## Custom dice
 
 Custom formula dice add reusable buttons to the roll history panel. A formula die can be a full formula such as `1d3`, `2d6 + 1`, or a keep/drop suffix such as `kh1`.
 
-Custom narrative dice choose from text outcomes instead of numeric totals. Each outcome can have an optional weight. If no valid weights are provided, each outcome has an equal chance.
+Custom narrative dice choose from text outcomes instead of numeric totals. Each outcome can have optional relative odds, such as `1`, `3`, `40%`, or `1/5`. If weights are blank or invalid, the plugin treats those outcomes as equal odds.
 
 ## Manual installation
 

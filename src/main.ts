@@ -3,7 +3,6 @@ import {
 	Menu,
 	Notice,
 	Plugin,
-	setIcon,
 	WorkspaceLeaf,
 } from "obsidian";
 import { BUILT_IN_DICE_BUTTONS, DEFAULT_SETTINGS, TtrpgDetectRollSettingTab } from "./settings";
@@ -120,16 +119,6 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 					...savedSettings?.toastColors?.dark,
 				},
 			},
-			clearHistoryButtonColors: {
-				light: {
-					...DEFAULT_SETTINGS.clearHistoryButtonColors.light,
-					...savedSettings?.clearHistoryButtonColors?.light,
-				},
-				dark: {
-					...DEFAULT_SETTINGS.clearHistoryButtonColors.dark,
-					...savedSettings?.clearHistoryButtonColors?.dark,
-				},
-			},
 			enabledDiceButtons: {
 				...DEFAULT_SETTINGS.enabledDiceButtons,
 				...savedSettings?.enabledDiceButtons,
@@ -142,6 +131,7 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 	async saveSettings(): Promise<void> {
 		await this.saveData(this.settings);
 		this.applyStyleVariables();
+		this.applyFormulaStyle();
 		this.refreshRollHistoryViews();
 	}
 
@@ -184,11 +174,6 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 		this.showNotice(this.createRollNoticeFragment(result), false);
 		this.refreshRollHistoryViews();
 		return result;
-	}
-
-	clearHistory(): void {
-		this.history = [];
-		this.refreshRollHistoryViews();
 	}
 
 	private processDiceFormulas(el: HTMLElement): void {
@@ -273,6 +258,14 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 		});
 
 		return formulaEl;
+	}
+
+	private applyFormulaStyle(): void {
+		document.querySelectorAll<HTMLElement>(".ttrpg-detect-roll-formula").forEach((formulaEl) => {
+			formulaEl.removeClass("ttrpg-detect-roll-formula-inline");
+			formulaEl.removeClass("ttrpg-detect-roll-formula-button");
+			formulaEl.addClass(`ttrpg-detect-roll-formula-${this.settings.formulaStyle}`);
+		});
 	}
 
 	private openFormulaMenu(evt: MouseEvent, formula: string): void {
@@ -541,7 +534,7 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 		const outcomes = die.outcomes
 			.map((outcome) => ({
 				label: outcome.label.trim(),
-				weight: Number(outcome.weight),
+				weight: this.parseNarrativeWeight(outcome.weight),
 			}))
 			.filter((outcome) => outcome.label);
 
@@ -581,6 +574,27 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 		};
 	}
 
+	private parseNarrativeWeight(rawWeight: string): number {
+		const weight = rawWeight.trim();
+
+		if (!weight) {
+			return Number.NaN;
+		}
+
+		if (weight.endsWith("%")) {
+			return Number(weight.slice(0, -1).trim());
+		}
+
+		const fractionMatch = /^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)$/.exec(weight);
+		if (fractionMatch) {
+			const numerator = Number(fractionMatch[1]);
+			const denominator = Number(fractionMatch[2]);
+			return denominator === 0 ? Number.NaN : numerator / denominator;
+		}
+
+		return Number(weight);
+	}
+
 	private createRollNoticeFragment(result: RollResult): DocumentFragment {
 		const fragment = document.createDocumentFragment();
 		fragment.createDiv({
@@ -595,6 +609,10 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 	}
 
 	private showNotice(message: string | DocumentFragment, isError: boolean): void {
+		if (!isError && !this.settings.showRollToasts) {
+			return;
+		}
+
 		const notice = new Notice(message, isError ? 5000 : 7000);
 		notice.containerEl.addClass("ttrpg-detect-roll-notice");
 		this.addToastPlacementClass(notice.containerEl, this.settings.toastPlacement);
@@ -628,16 +646,12 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 		const theme = this.getCurrentTheme();
 		const formulaColors = this.settings.formulaColors[theme];
 		const toastColors = this.settings.toastColors[theme];
-		const clearHistoryButtonColors = this.settings.clearHistoryButtonColors[theme];
 
 		this.setStyleVariable("--ttrpg-detect-roll-formula-text", formulaColors.text);
 		this.setStyleVariable("--ttrpg-detect-roll-formula-background", formulaColors.background);
 		this.setStyleVariable("--ttrpg-detect-roll-formula-border", formulaColors.border);
 		this.setStyleVariable("--ttrpg-detect-roll-toast-text", toastColors.text);
 		this.setStyleVariable("--ttrpg-detect-roll-toast-background", toastColors.background);
-		this.setStyleVariable("--ttrpg-detect-roll-clear-text", clearHistoryButtonColors.text);
-		this.setStyleVariable("--ttrpg-detect-roll-clear-background", clearHistoryButtonColors.background);
-		this.setStyleVariable("--ttrpg-detect-roll-clear-border", clearHistoryButtonColors.border);
 	}
 
 	private clearStyleVariables(): void {
@@ -647,9 +661,6 @@ export default class TtrpgDetectRollPlugin extends Plugin {
 			"--ttrpg-detect-roll-formula-border",
 			"--ttrpg-detect-roll-toast-text",
 			"--ttrpg-detect-roll-toast-background",
-			"--ttrpg-detect-roll-clear-text",
-			"--ttrpg-detect-roll-clear-background",
-			"--ttrpg-detect-roll-clear-border",
 		]) {
 			document.body.style.removeProperty(name);
 		}
@@ -852,10 +863,6 @@ class RollHistoryView extends ItemView {
 			modesEl.appendChild(this.createAdvantageButton("disadvantage", "Disadvantage"));
 		}
 
-		if (this.plugin.settings.showClearHistoryButton) {
-			const clearEl = controlsEl.createDiv({ cls: "ttrpg-detect-roll-clear-row" });
-			clearEl.appendChild(this.createClearHistoryButton());
-		}
 	}
 
 	private createOperatorButton(operator: Operator): HTMLButtonElement {
@@ -873,20 +880,6 @@ class RollHistoryView extends ItemView {
 			this.inputEl?.focus();
 		});
 
-		return buttonEl;
-	}
-
-	private createClearHistoryButton(): HTMLButtonElement {
-		const buttonEl = document.createElement("button");
-		buttonEl.setAttr("type", "button");
-		buttonEl.setAttr("aria-label", "Clear roll history");
-		buttonEl.setAttr("title", "Clear roll history");
-		buttonEl.createSpan({ text: "Clear logs history" });
-		setIcon(buttonEl, "trash-2");
-		buttonEl.addClass("ttrpg-detect-roll-clear-button");
-		buttonEl.addEventListener("click", () => {
-			this.plugin.clearHistory();
-		});
 		return buttonEl;
 	}
 

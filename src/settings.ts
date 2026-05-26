@@ -18,12 +18,6 @@ export interface ToastColorSettings {
 	background: string;
 }
 
-export interface ButtonColorSettings {
-	text: string;
-	background: string;
-	border: string;
-}
-
 export interface CustomFormulaDie {
 	id: string;
 	label: string;
@@ -46,16 +40,15 @@ export interface RpgDetectDiceRollSettings {
 	formulaStyle: FormulaStyle;
 	formulaColors: Record<ThemeMode, FormulaColorSettings>;
 	toastColors: Record<ThemeMode, ToastColorSettings>;
-	clearHistoryButtonColors: Record<ThemeMode, ButtonColorSettings>;
 	enabledDiceButtons: Record<BuiltInDiceButton, boolean>;
 	customFormulaDice: CustomFormulaDie[];
 	customNarrativeDice: CustomNarrativeDie[];
+	showRollToasts: boolean;
 	toastPlacement: ToastPlacement;
 	historyLimit: number;
 	showAdvantageButtons: boolean;
 	allowAdvantageStacking: boolean;
 	showOperatorButtons: boolean;
-	showClearHistoryButton: boolean;
 }
 
 export const DEFAULT_SETTINGS: RpgDetectDiceRollSettings = {
@@ -82,18 +75,6 @@ export const DEFAULT_SETTINGS: RpgDetectDiceRollSettings = {
 			background: "",
 		},
 	},
-	clearHistoryButtonColors: {
-		light: {
-			text: "var(--text-error)",
-			background: "rgba(var(--color-red-rgb), 0.12)",
-			border: "rgba(var(--color-red-rgb), 0.35)",
-		},
-		dark: {
-			text: "var(--text-error)",
-			background: "rgba(var(--color-red-rgb), 0.16)",
-			border: "rgba(var(--color-red-rgb), 0.4)",
-		},
-	},
 	enabledDiceButtons: {
 		d4: true,
 		d6: true,
@@ -105,12 +86,12 @@ export const DEFAULT_SETTINGS: RpgDetectDiceRollSettings = {
 	},
 	customFormulaDice: [],
 	customNarrativeDice: [],
+	showRollToasts: true,
 	toastPlacement: "default",
 	historyLimit: 20,
 	showAdvantageButtons: true,
 	allowAdvantageStacking: false,
 	showOperatorButtons: true,
-	showClearHistoryButton: true,
 };
 
 export class TtrpgDetectRollSettingTab extends PluginSettingTab {
@@ -151,19 +132,32 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 				}));
 
 		new Setting(containerEl)
-			.setName("Toast placement")
-			.setDesc("Choose where plugin roll notices appear.")
-			.addDropdown((dropdown) => dropdown
-				.addOption("default", "Default")
-				.addOption("bottom-right", "Bottom right")
-				.addOption("bottom-left", "Bottom left")
-				.addOption("top-right", "Top right")
-				.addOption("top-left", "Top left")
-				.setValue(this.plugin.settings.toastPlacement)
+			.setName("Show roll notices")
+			.setDesc("Show a toast notice when a roll completes.")
+			.addToggle((toggle) => toggle
+				.setValue(this.plugin.settings.showRollToasts)
 				.onChange(async (value) => {
-					this.plugin.settings.toastPlacement = value as ToastPlacement;
+					this.plugin.settings.showRollToasts = value;
 					await this.plugin.saveSettings();
+					this.display();
 				}));
+
+		if (this.plugin.settings.showRollToasts) {
+			new Setting(containerEl)
+				.setName("Toast placement")
+				.setDesc("Choose where plugin roll notices appear.")
+				.addDropdown((dropdown) => dropdown
+					.addOption("default", "Default")
+					.addOption("bottom-right", "Bottom right")
+					.addOption("bottom-left", "Bottom left")
+					.addOption("top-right", "Top right")
+					.addOption("top-left", "Top left")
+					.setValue(this.plugin.settings.toastPlacement)
+					.onChange(async (value) => {
+						this.plugin.settings.toastPlacement = value as ToastPlacement;
+						await this.plugin.saveSettings();
+					}));
+		}
 
 		new Setting(containerEl).setName("Manual roll controls").setHeading();
 
@@ -201,17 +195,6 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 					this.display();
 				}));
 
-		new Setting(containerEl)
-			.setName("Show clear history button")
-			.setDesc("Show a button for clearing the roll history panel.")
-			.addToggle((toggle) => toggle
-				.setValue(this.plugin.settings.showClearHistoryButton)
-				.onChange(async (value) => {
-					this.plugin.settings.showClearHistoryButton = value;
-					await this.plugin.saveSettings();
-					this.display();
-				}));
-
 		new Setting(containerEl).setName("Dice buttons").setHeading();
 
 		for (const dice of BUILT_IN_DICE_BUTTONS) {
@@ -236,10 +219,6 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 		this.addFormulaColorSettings("dark");
 		this.addToastColorSettings("light");
 		this.addToastColorSettings("dark");
-		if (this.plugin.settings.showClearHistoryButton) {
-			this.addClearHistoryButtonColorSettings("light");
-			this.addClearHistoryButtonColorSettings("dark");
-		}
 		this.colorSettingsContainerEl = null;
 	}
 
@@ -290,7 +269,7 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Narrative dice")
-			.setDesc("Create buttons that immediately choose from narrative outcomes.")
+			.setDesc("Create buttons that immediately choose one text outcome. Odds are optional relative weights; blanks and invalid values use equal odds.")
 			.addButton((button) => button
 				.setButtonText("Add narrative die")
 				.onClick(async () => {
@@ -347,7 +326,7 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 							await this.plugin.saveSettings();
 						}))
 					.addText((text) => text
-						.setPlaceholder("Weight")
+						.setPlaceholder("Odds: 40% or 1/5")
 						.setValue(outcome.weight)
 						.onChange(async (value) => {
 							outcome.weight = value;
@@ -374,7 +353,7 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Text")
-			.setDesc("Leave blank to use the active Obsidian theme accent color.")
+			.setDesc("Leave blank to use the active Obsidian external link color.")
 			.addText((text) => text
 				.setPlaceholder("Theme default")
 				.setValue(this.plugin.settings.formulaColors[theme].text)
@@ -506,45 +485,6 @@ export class TtrpgDetectRollSettingTab extends PluginSettingTab {
 				.setTooltip("Reset to default")
 				.onClick(async () => {
 					this.plugin.settings.toastColors[theme].background = DEFAULT_SETTINGS.toastColors[theme].background;
-					await this.plugin.saveSettings();
-					this.display();
-				}));
-	}
-
-	private addClearHistoryButtonColorSettings(theme: ThemeMode): void {
-		const label = this.formatThemeLabel(theme);
-
-		const containerEl = this.getColorSettingsContainerEl();
-
-		new Setting(containerEl).setName(`${label} clear history button colors`).setHeading();
-		this.addClearButtonColorSetting(theme, "text", "Text", "Reset to the default red text color.");
-		this.addClearButtonColorSetting(theme, "background", "Background", "Reset to the default light red background.");
-		this.addClearButtonColorSetting(theme, "border", "Border", "Reset to the default red border.");
-	}
-
-	private addClearButtonColorSetting(theme: ThemeMode, key: keyof ButtonColorSettings, name: string, desc: string): void {
-		new Setting(this.getColorSettingsContainerEl())
-			.setName(name)
-			.setDesc(desc)
-			.addText((text) => text
-				.setPlaceholder("Default red")
-				.setValue(this.plugin.settings.clearHistoryButtonColors[theme][key])
-				.onChange(async (value) => {
-					this.plugin.settings.clearHistoryButtonColors[theme][key] = value;
-					await this.plugin.saveSettings();
-				}))
-			.addColorPicker((color) => color
-				.setValue(this.getPickerValue(this.plugin.settings.clearHistoryButtonColors[theme][key]))
-				.onChange(async (value) => {
-					this.plugin.settings.clearHistoryButtonColors[theme][key] = value;
-					await this.plugin.saveSettings();
-					this.display();
-				}))
-			.addExtraButton((button) => button
-				.setIcon("refresh-cw")
-				.setTooltip("Reset to default")
-				.onClick(async () => {
-					this.plugin.settings.clearHistoryButtonColors[theme][key] = DEFAULT_SETTINGS.clearHistoryButtonColors[theme][key];
 					await this.plugin.saveSettings();
 					this.display();
 				}));
